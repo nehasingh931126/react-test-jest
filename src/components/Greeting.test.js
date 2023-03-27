@@ -1,6 +1,6 @@
  import Greeting from "./Greeting";
-import { render, screen } from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from '@testing-library/react';
+// import fireEvent from "@testing-library/user-event";
 
 describe("Greeting Component", ()=> {
     test("render hello world", () => {
@@ -15,18 +15,7 @@ describe("Greeting Component", ()=> {
         expect(helloWorkElement).toBeInTheDocument()
     });
 
-    test("render changed button clicked", () => {
-        // Arrange 
-        render(<Greeting />);
-
-        //Act
-        const buttonElement = screen.getByRole('button');
-        userEvent.click(buttonElement)
-
-        // Assert
-        const changedText = screen.getByText(`Changed`, { exact: false });
-        expect(changedText).toBeInTheDocument();
-    });
+    
 
     test("render good to see you if the button clicked", () => {
         // Arrange 
@@ -36,9 +25,22 @@ describe("Greeting Component", ()=> {
         // nothing
 
         // Assert
-        const goodToSeeYouElement = screen.getByText(`It's good to see you!`, { exact: false });
+        const goodToSeeYouElement = screen.getByText(`It's good to see you`, { exact: false });
         expect(goodToSeeYouElement).toBeInTheDocument();
     })
+
+    test("render changed button clicked", () => {
+        // Arrange 
+        render(<Greeting />);
+
+        //Act
+        const buttonElement = screen.getByRole('button');
+        fireEvent.click(buttonElement)
+
+        // Assert
+        const changedText = screen.getByText(`Changed`, { exact: true });
+        expect(changedText).toBeInTheDocument();
+    });
 
     test("does not render good to see you if the button was clicked", () => {
         // Arrange 
@@ -46,10 +48,10 @@ describe("Greeting Component", ()=> {
 
         //Act
         const buttonElement = screen.getByRole('button');
-        userEvent.click(buttonElement)
+        fireEvent.click(buttonElement)
 
         // Assert
-        const outputText = screen.getByText(`It's good to see you!`);
+        const outputText = screen.queryByText("It's good to see you");
         expect(outputText).toBeNull();
     })
 })
